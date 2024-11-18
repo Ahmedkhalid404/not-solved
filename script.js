@@ -1,7 +1,6 @@
 $(document).ready(function () {
     let handles = [];
 
-    // Function to add a new input field for handles
     $("#add-handle").click(function () {
         let newInput = `
             <div class="row mb-2">
@@ -15,17 +14,14 @@ $(document).ready(function () {
         $("#handle-section").append(newInput);
     });
 
-    // Function to remove an input field
     $(document).on("click", ".remove-handle", function () {
         $(this).closest(".row").remove();
     });
 
-    // Function to fetch problems
     $("#get-problems").click(async function () {
         handles = [];
-        $("#problem-lists").html(""); // Clear previous problems
+        $("#problem-lists").html(""); 
 
-        // Collect all handles
         $("#handle-section input").each(function () {
             const handle = $(this).val().trim();
             if (handle) handles.push(handle);
@@ -36,12 +32,10 @@ $(document).ready(function () {
             return;
         }
 
-        // Get the number of problems from input and ensure it's between 1 and 100
         let problemCount = parseInt($("#problem-count").val()) || 10;
         problemCount = Math.min(Math.max(problemCount, 1), 100);
 
         try {
-            // Fetch solved problems for all handles
             const solvedProblems = new Set();
             for (const handle of handles) {
                 const userStatus = await fetch(`https://codeforces.com/api/user.status?handle=${handle}`);
@@ -55,7 +49,6 @@ $(document).ready(function () {
                 }
             }
 
-            // Fetch all problems
             const problemSet = await fetch("https://codeforces.com/api/problemset.problems");
             const problemData = await problemSet.json();
             if (problemData.status === "OK") {
@@ -69,7 +62,6 @@ $(document).ready(function () {
                     }
                 });
 
-                // Render problems by rating
                 renderProblemsByRating(problemsByRating, problemCount);
             }
         } catch (error) {
@@ -78,7 +70,6 @@ $(document).ready(function () {
         }
     });
 
-    // Function to render problems
     function renderProblemsByRating(problemsByRating, problemCount) {
         for (const rating in problemsByRating) {
             const problemList = getRandomElements(problemsByRating[rating], problemCount);
@@ -110,7 +101,6 @@ $(document).ready(function () {
         }
     }
 
-    // Function to get random elements from an array
     function getRandomElements(array, count) {
         const shuffled = array.slice();
         for (let i = shuffled.length - 1; i > 0; i--) {
